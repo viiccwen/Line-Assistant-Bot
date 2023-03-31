@@ -1,0 +1,9 @@
+若server更新，重新開啟
+需更改專案中的settings.py(mylinebot/settings.py)
+以及加上token
+
+ALLOWED_HOSTS = [
+    'e453-223-138-253-151.jp.ngrok.io' # 更改這裡
+]
+
+並進入 Line Developers 更改 webhook URL
