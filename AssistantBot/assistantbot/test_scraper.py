@@ -19,10 +19,6 @@ list_play_dic = ["景點", "好玩", "地方", "地點", "地", "娛樂"]
 list_food_dic = ["餐廳", "好吃", "美食", "飲食", "吃飯"]
 
 class function(ABC):
-
-    def __init__(self):
-        pass
-
     @abstractmethod
     def scrape(self):
         pass
@@ -55,7 +51,7 @@ class IFoodie(function):
         
         
             #將取得的餐廳名稱、評價及地址連結一起，並且指派給content變數
-            content += f"{title} \n{stars}顆星 \n{address} \n\n"
+            content += f"{title} - {stars}顆星 \n{address} \n\n"
                     
         return content
 
@@ -63,30 +59,6 @@ class IFoodie(function):
 
 
 class okgo(function):
-    def info(self, web_address):
-        url = "https://okgo.tw/" + web_address
-
-        response = requests.get(url = url, headers = {"user-agent" : user_agent.random})
-
-        soup = BeautifulSoup(response.content, "html.parser") 
-
-        information = soup.find('div', {'class' : 'sec3 word Resize'})
-
-        title = information.find('h2', {'style' : 'color:#40a0bf;'}).getText()
-
-        zones = information.find('strong').find_all('a')
-        zone_text = ""
-        for zone in zones: zone_text += zone.text
-
-        #phone = information.find('h2')
-        #print(len(phone))
-
-        TransInfo = soup.find('div', {'id' : 'Buty_View_Traffic'}).getText()
-
-
-        content = f"{title}\n\n{zone_text}\n\n{TransInfo}\n\n" #\n{phone}"#\n{address}
-        return content
-
     def scrape(self, area):
         # okgo 玩全台灣
         url = "https://okgo.tw/Search.html?Page=1&kw=" + area + "&st=1"
@@ -98,18 +70,33 @@ class okgo(function):
         content = ""
         for card in cards:
             web_address = card.find('a', {'class' : 'STopic'})
-            content += okgo().info(web_address["href"])
-                    
+
+            url = "https://okgo.tw/" + web_address["href"]
+            response = requests.get(url = url, headers = {"user-agent" : user_agent.random})
+
+            soup = BeautifulSoup(response.content, "html.parser") 
+
+            information = soup.find('div', {'class' : 'sec3 word Resize'})
+
+            title = information.find('h2', {'style' : 'color:#40a0bf;'}).getText()
+
+            zone_list = information.find('strong').find_all('a')
+            zone = ""
+            for zones in zone_list: zone += zones.text
+
+            TransInfo = soup.find('div', {'id' : 'Buty_View_Traffic'}).getText()
+
+
+            content += f"{title} - {zone}\n\n{TransInfo}\n\n"
+
+
         return content
 
-class check(function):
-    def scrape(self):
-        pass
-    
-    def checkFunc(self, sentence):
-        function = '0'
-        area = ""
+class check:
+    func = '0'
+    area = ""
 
+    def CheckIFoodie(sentence):
         for i in list_food_dic:
             pos = sentence.find(i)
 
@@ -118,45 +105,52 @@ class check(function):
                     pos = sentence.find(j)
 
                     if pos != -1:
-                        function = '1'
-                        area = sentence[pos:pos+3]
-                        #print(area)
+                        check.func = '1'
+                        check.area = sentence[pos:pos+3]
                         break
             
-            if area != "":
+            if check.area != "":
+                
                 break
+    
+    def CheckOkgo(sentence):
+        for i in list_play_dic:
+            pos = sentence.find(i)
+
+            if pos != -1:
+                for j in list_city:
+                    pos = sentence.find(j)
+
+                    if pos != -1:
+                        check.func = '2'
+                        check.area = sentence[pos:pos+3]
+                        break
+
+            if check.area != "":
+                break
+
+
+    def main(self, sentence):
+        
+        check.CheckIFoodie(sentence)
+        if(check.func == '0'): check.CheckOkgo(sentence)
+        if(check.func == '0'): pass
             
-        if function == '0':
-            for i in list_play_dic:
-                pos = sentence.find(i)
 
-                if pos != -1:
-                    for j in list_city:
-                        pos = sentence.find(j)
-
-                        if pos != -1:
-                            function = '2'
-                            area = sentence[pos:pos+3]
-                            #print(area)
-                            break
-
-                if area != "":
-                    break
-
-        if function == '0':
+        if check.func == '0':
             content = "none"
-        elif function == '1':
-            content = IFoodie().scrape(area)
-        elif function == '2':
-            content = okgo().scrape(area)
+        
+        elif check.func == '1':
+            content = IFoodie().scrape(check.area)
+        
+        elif check.func == '2':
+            content = okgo().scrape(check.area)
 
 
         return content
 
 
 
-sentence = "台中市有什麼好吃的？"
-reply = check().checkFunc(sentence)
+sen = "台中市有什麼好吃的？"
+reply = check().main(sen)
 print(reply)
-
-
