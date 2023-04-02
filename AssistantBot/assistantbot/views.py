@@ -36,11 +36,15 @@ def callback(request):
         for event in events:
             if isinstance(event, MessageEvent):
                 
-                reply = check.main(event.message.text)
+                reply = check().main(event.message.text)
                 
-                line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(text=reply)
-                )
+                if reply != "error":
+                    line_bot_api.reply_message(
+                        event.reply_token, TextSendMessage(text=reply))
+                else:
+                    line_bot_api.reply_message(
+                        event.reply_token, TextSendMessage(text="無法辨識您的問題。"))
+
         return HttpResponse()
     else:
         return HttpResponseBadRequest()

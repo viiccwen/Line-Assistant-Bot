@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 from fake_useragent import UserAgent
 from abc import ABC, abstractmethod
-from lxml import etree, html
+import time
 
 ua = UserAgent() 
 user_agent = UserAgent()
@@ -20,14 +20,17 @@ list_food_dic = ["餐廳", "好吃", "美食", "飲食", "吃飯"]
 
 list_weather_dic = ["天氣", "下雨", "降雨機率"]
 
+
 class function(ABC):
+
     @abstractmethod
-    def scrape(self):
+    def crawler(self):
         pass
 
 
 class IFoodie(function):
-    def scrape(self, area):
+
+    def crawler(self, area):
         # IFoodie 愛食記網站
         url = "https://ifoodie.tw/explore/" + area + \
             "/list?sortby=popular&opening=true"
@@ -37,9 +40,8 @@ class IFoodie(function):
         soup = BeautifulSoup(response.content, "html.parser")
 
         cards = soup.find_all('div', {'class': 'jsx-1156793088 restaurant-info'}, limit=10)
-        print(len(cards))
-        content = ""
 
+        content = ""
         for card in cards:
                     
             title = card.find(  # 餐廳名稱
@@ -61,7 +63,8 @@ class IFoodie(function):
 
 
 class okgo(function):
-    def scrape(self, area):
+
+    def crawler(self, area):
         # okgo 玩全台灣
         url = "https://okgo.tw/Search.html?Page=1&kw=" + area + "&st=1"
         response = requests.get(url = url, headers = {"user-agent" : user_agent.random})
@@ -69,11 +72,13 @@ class okgo(function):
         soup = BeautifulSoup(response.content, "html.parser") 
 
         cards = soup.find_all('li', {'id': 'Search_Content_li'}, limit=5)
+
         content = ""
         for card in cards:
             web_address = card.find('a', {'class' : 'STopic'})
 
             url = "https://okgo.tw/" + web_address["href"]
+            
             response = requests.get(url = url, headers = {"user-agent" : user_agent.random})
 
             soup = BeautifulSoup(response.content, "html.parser") 
@@ -95,8 +100,9 @@ class okgo(function):
         return content
 
 
-class weather(function):       
-    def scrape(self, area):
+class weather(function):      
+
+    def crawler(self, area):
 
         city_web = {"台北市" : "https://weather.com/zh-TW/weather/hourbyhour/l/6b221b26e046a442e03dc46fbe91d5874c6461afde61187dd4126bddeea1e2aa",
                     "基隆市" : "https://weather.com/zh-TW/weather/hourbyhour/l/7a1bd787c9a5bfd8b7290f325ea531127a0447198d4c09689f6cf12f4421a110a042adb62e0ce6b4ee0110784300e689",
@@ -134,16 +140,12 @@ class weather(function):
         
 
 class check:
-    func = '0'
-    area = ""
+    def __init__(self) -> None:
+        self.area = ""
+        self.func = '0'
 
-    def __init__():
-        check.func = "0"
-        check.area = ""
-
-
-    def CheckIFoodie(sentence):
-        for i in list_food_dic:
+    def CheckFunc(self, sentence, list_dic, func_no):
+        for i in list_dic:
             pos = sentence.find(i)
 
             if pos != -1:
@@ -151,68 +153,36 @@ class check:
                     pos = sentence.find(j)
 
                     if pos != -1:
-                        check.func = '1'
-                        check.area = sentence[pos:pos+3]
+                        self.func = func_no
+                        self.area = sentence[pos:pos+3]
                         break
             
-            if check.area != "":
-                break
-    
-    def CheckOkgo(sentence):
-        for i in list_play_dic:
-            pos = sentence.find(i)
-
-            if pos != -1:
-                for j in list_city:
-                    pos = sentence.find(j)
-
-                    if pos != -1:
-                        check.func = '2'
-                        check.area = sentence[pos:pos+3]
-                        break
-
-            if check.area != "":
+            if self.area != "":
                 break
 
-    def CheckWeather(sentence):
-        for i in list_weather_dic:
-            pos = sentence.find(i)
 
-            if pos != -1:
-                for j in list_city:
-                    pos = sentence.find(j)
+    def main(self, sentence):
+        
+        if self.func == '0': self.CheckFunc(sentence, list_food_dic, '1')
 
-                    if pos != -1:
-                        check.func = '3'
-                        check.area = sentence[pos:pos+3]
-                        break
-            
-            if check.area != "":
-                break
+        if self.func == '0': self.CheckFunc(sentence, list_play_dic, '2')
+        
+        if self.func == '0': self.CheckFunc(sentence, list_weather_dic, '3')
 
-    def main(sentence):
-        check.area = ""
-        check.func = "0"
 
-        if check.func == '0': check.CheckIFoodie(sentence)
-        if check.func == '0': check.CheckOkgo(sentence)
-        if check.func == '0': check.CheckWeather(sentence)
-            
-
-        if check.func == '0':
+        if self.func == '0':
             content = "error"
         
-        elif check.func == '1':
-            content = IFoodie().scrape(check.area)
+        elif self.func == '1':
+            content = IFoodie().crawler(self.area)
         
-        elif check.func == '2':
-            content = okgo().scrape(check.area)
+        elif self.func == '2':
+            content = okgo().crawler(self.area)
         
-        elif check.func == '3':
-            content = weather().scrape(check.area)
+        elif self.func == '3':
+            content = weather().crawler(self.area)
         
-        else: 
+        else:
             content = "error"
-
 
         return content
