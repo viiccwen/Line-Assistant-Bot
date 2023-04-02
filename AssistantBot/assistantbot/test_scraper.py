@@ -18,6 +18,8 @@ list_play_dic = ["景點", "好玩", "地方", "地點", "地", "娛樂"]
 
 list_food_dic = ["餐廳", "好吃", "美食", "飲食", "吃飯"]
 
+list_weather_dic = ["天氣", "下雨", "降雨機率"]
+
 class function(ABC):
     @abstractmethod
     def scrape(self):
@@ -92,6 +94,45 @@ class okgo(function):
 
         return content
 
+
+class weather(function):       
+    def scrape(self, area):
+
+        city_web = {"台北市" : "https://weather.com/zh-TW/weather/hourbyhour/l/6b221b26e046a442e03dc46fbe91d5874c6461afde61187dd4126bddeea1e2aa",
+                    "基隆市" : "https://weather.com/zh-TW/weather/hourbyhour/l/7a1bd787c9a5bfd8b7290f325ea531127a0447198d4c09689f6cf12f4421a110a042adb62e0ce6b4ee0110784300e689",
+                    "台南市" : "https://weather.com/zh-TW/weather/hourbyhour/l/cb9a4442e9bf7da0ece89bd21a5161210e79cccc0ec2647b3565977e7a278c31"}
+
+        url = city_web[area]
+
+        user_agent = UserAgent()
+
+        response = requests.get(url=url, headers={"user-agent": user_agent.random})
+
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        cards = soup.find_all(
+            "div", {"class": "DetailsSummary--DetailsSummary--1DqhO"}, limit=15)
+
+        content = f"{area}每日天氣\n\n"
+        for card in cards:
+
+            times = card.find(
+                "h3", {"class": "DetailsSummary--daypartName--kbngc"}).getText()
+
+            if times == "00:00": break # breakpoint
+
+            temprature = card.find("span", {"class": "DetailsSummary--tempValue--jEiXE"}).getText()
+
+            status = card.find("span", {"class": "DetailsSummary--extendedData--307Ax"}).getText()
+
+            rain_prob = card.find("span", {"data-testid": "PercentageValue"}).getText()
+
+            content += f"時間:{times}\n氣溫:{temprature}\n天氣狀況:{status}\n降雨機率:{rain_prob}\n\n"
+            
+
+        return content
+        
+
 class check:
     func = '0'
     area = ""
@@ -110,7 +151,6 @@ class check:
                         break
             
             if check.area != "":
-                
                 break
     
     def CheckOkgo(sentence):
@@ -129,28 +169,48 @@ class check:
             if check.area != "":
                 break
 
+    def CheckWeather(sentence):
+        for i in list_weather_dic:
+            pos = sentence.find(i)
 
-    def main(self, sentence):
+            if pos != -1:
+                for j in list_city:
+                    pos = sentence.find(j)
+
+                    if pos != -1:
+                        check.func = '3'
+                        check.area = sentence[pos:pos+3]
+                        break
+            
+            if check.area != "":
+                break
+
+    def main(sentence):
         
-        check.CheckIFoodie(sentence)
-        if(check.func == '0'): check.CheckOkgo(sentence)
-        if(check.func == '0'): pass
+        if check.func == '0': check.CheckIFoodie(sentence)
+        if check.func == '0': check.CheckOkgo(sentence)
+        if check.func == '0': check.CheckWeather(sentence)
             
 
         if check.func == '0':
-            content = "none"
+            content = "error"
         
         elif check.func == '1':
             content = IFoodie().scrape(check.area)
         
         elif check.func == '2':
             content = okgo().scrape(check.area)
-
+        
+        elif check.func == '3':
+            content = weather().scrape(check.area)
+        
+        else:
+            content = "error"
 
         return content
 
 
 
-sen = "台中市有什麼好吃的？"
-reply = check().main(sen)
+sen = "台南市今天天氣如何？"
+reply = check.main(sen)
 print(reply)
