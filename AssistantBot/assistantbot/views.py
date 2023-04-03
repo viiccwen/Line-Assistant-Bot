@@ -11,7 +11,7 @@ from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage
 from linebot.models import *
  
-from .check import check
+from .main import Main
 
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -37,10 +37,22 @@ def callback(request):
         for event in events:
             if isinstance(event, MessageEvent):
                 
-                reply = check.main(event.message.text)
+                func = Main.check(event.message.text)
                 
-                line_bot_api.reply_message(
-                    event.reply_token, reply)
+                if func == '0':
+                    line_bot_api.reply_message(
+                    event.reply_token, "error")
+
+                elif func == '1': # 回傳選擇縣市之列表 (json list)
+                    City_message = Main.ChooseFunc(event.message.text)
+                    line_bot_api.reply_message(
+                    event.reply_token, City_message)
+
+                elif func == '2': # 回傳功能對應之結果 (字串)
+                    reply = Main.ChooseArea(event.message.text)
+                    line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(reply))
+                    
 
         return HttpResponse()
     else:
