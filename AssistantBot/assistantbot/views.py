@@ -9,8 +9,9 @@ from django.conf import settings
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage
+from linebot.models import *
  
-from .scraper import IFoodie, okgo, weather, check
+from .check import check
 
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
@@ -36,14 +37,10 @@ def callback(request):
         for event in events:
             if isinstance(event, MessageEvent):
                 
-                reply = check().main(event.message.text)
+                reply = check.main(event.message.text)
                 
-                if reply != "error":
-                    line_bot_api.reply_message(
-                        event.reply_token, TextSendMessage(text=reply))
-                else:
-                    line_bot_api.reply_message(
-                        event.reply_token, TextSendMessage(text="無法辨識您的問題。"))
+                line_bot_api.reply_message(
+                    event.reply_token, reply)
 
         return HttpResponse()
     else:

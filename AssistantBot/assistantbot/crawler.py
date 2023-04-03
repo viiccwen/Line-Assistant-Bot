@@ -7,19 +7,6 @@ import time
 ua = UserAgent() 
 user_agent = UserAgent()
 
-list_city = ["台北市", "基隆市", "新北市", 
-             "台中市", "桃園市", "台南市",
-             "高雄市", "宜蘭縣", "新竹縣",
-             "苗栗縣", "彰化縣", "南投縣",
-             "雲林縣", "嘉義縣", "屏東縣",
-             "台東縣", "澎湖縣", "新竹市","嘉義市"]
-
-list_play_dic = ["景點", "好玩", "地方", "地點", "地", "娛樂"]
-
-list_food_dic = ["餐廳", "好吃", "美食", "飲食", "吃飯"]
-
-list_weather_dic = ["天氣", "下雨", "降雨機率"]
-
 
 class function(ABC):
 
@@ -139,50 +126,3 @@ class weather(function):
         return content
         
 
-class check:
-    def __init__(self) -> None:
-        self.area = ""
-        self.func = '0'
-
-    def CheckFunc(self, sentence, list_dic, func_no):
-        for i in list_dic:
-            pos = sentence.find(i)
-
-            if pos != -1:
-                for j in list_city:
-                    pos = sentence.find(j)
-
-                    if pos != -1:
-                        self.func = func_no
-                        self.area = sentence[pos:pos+3]
-                        break
-            
-            if self.area != "":
-                break
-
-
-    def main(self, sentence):
-        
-        if self.func == '0': self.CheckFunc(sentence, list_food_dic, '1')
-
-        if self.func == '0': self.CheckFunc(sentence, list_play_dic, '2')
-        
-        if self.func == '0': self.CheckFunc(sentence, list_weather_dic, '3')
-
-
-        if self.func == '0':
-            content = "error"
-        
-        elif self.func == '1':
-            content = IFoodie().crawler(self.area)
-        
-        elif self.func == '2':
-            content = okgo().crawler(self.area)
-        
-        elif self.func == '3':
-            content = weather().crawler(self.area)
-        
-        else:
-            content = "error"
-
-        return content
