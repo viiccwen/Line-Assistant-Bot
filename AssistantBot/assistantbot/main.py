@@ -15,7 +15,7 @@ class Main:
     func = '0'
 
     def ChooseFunc(sentence):
-        if Main.func == '0' and int(len(sentence)) == 4:
+        if Main.func == '0' and (sentence in list_function):
             if sentence == '餐廳美食':
                 Main.func = '1'
                 return button()
