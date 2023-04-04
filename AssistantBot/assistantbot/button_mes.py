@@ -5,10 +5,10 @@ message = []
 def button():
     global message
     if message == []:
-        message=TemplateSendMessage(
-            alt_text='Carousel template',
-            template=CarouselTemplate(
-                columns=[
+        message = TemplateSendMessage(
+            alt_text = 'Carousel template',
+            template = CarouselTemplate(
+                columns = [
                     CarouselColumn(
                         title='縣市選擇',
                         text='請選擇縣市',
@@ -58,8 +58,8 @@ def button():
                                 text='台中市'
                             ),
                             MessageAction(
-                                label='台中市',
-                                text='台中市'
+                                label='彰化縣',
+                                text='彰化縣'
                             )
                         ]
                     ),
@@ -67,10 +67,6 @@ def button():
                         title='縣市選擇',
                         text='請選擇縣市',
                         actions=[
-                            MessageAction(
-                                label='彰化縣',
-                                text='彰化縣'
-                            ),
                             MessageAction(
                                 label='雲林縣',
                                 text='雲林縣'
@@ -78,6 +74,10 @@ def button():
                             MessageAction(
                                 label='嘉義縣',
                                 text='嘉義縣'
+                            ),
+                            MessageAction(
+                                label='嘉義市',
+                                text='嘉義市'
                             )
                         ]
                     ),
@@ -85,10 +85,6 @@ def button():
                         title='縣市選擇',
                         text='請選擇縣市',
                         actions=[
-                            MessageAction(
-                                label='嘉義市',
-                                text='嘉義市'
-                            ),
                             MessageAction(
                                 label='台南市',
                                 text='台南市'
@@ -96,6 +92,10 @@ def button():
                             MessageAction(
                                 label='高雄市',
                                 text='高雄市'
+                            ),
+                            MessageAction(
+                                label='屏東縣',
+                                text='屏東縣'
                             )
                         ]
                     ),
@@ -103,10 +103,6 @@ def button():
                         title='縣市選擇',
                         text='請選擇縣市',
                         actions=[
-                            MessageAction(
-                                label='屏東縣',
-                                text='屏東縣'
-                            ),
                             MessageAction(
                                 label='台東縣',
                                 text='台東縣'
@@ -114,6 +110,10 @@ def button():
                             MessageAction(
                                 label='花蓮縣',
                                 text='花蓮縣'
+                            ),
+                            MessageAction(
+                                label='宜蘭縣',
+                                text='宜蘭縣'
                             )
                         ]
                     ),
@@ -122,16 +122,16 @@ def button():
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
-                                label='宜蘭縣',
-                                text='宜蘭縣'
-                            ),
-                            MessageAction(
                                 label='南投縣',
                                 text='南投縣'
                             ),
                             MessageAction(
                                 label='澎湖縣',
                                 text='澎湖縣'
+                            ),
+                            MessageAction(
+                                label='Not Implement',
+                                text='Not Implement'
                             )
                         ]
                     )
