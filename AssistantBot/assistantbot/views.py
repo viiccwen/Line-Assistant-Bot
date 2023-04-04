@@ -41,7 +41,7 @@ def callback(request):
                 
                 if func == '0':
                     line_bot_api.reply_message(
-                    event.reply_token, "error")
+                    event.reply_token, TextSendMessage("error"))
 
                 elif func == '1': # 回傳選擇縣市之列表 (json list)
                     City_message = Main.ChooseFunc(event.message.text)

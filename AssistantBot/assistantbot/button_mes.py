@@ -10,15 +10,15 @@ def button():
                     title='縣市選擇',
                     text='請選擇縣市',
                     actions=[
-                        MessageTemplateAction(
+                        MessageAction(
                             label='基隆市',
                             text='基隆市'
                         ),
-                        MessageTemplateAction(
+                        MessageAction(
                             label='台北市',
                             text='台北市'
                         ),
-                        MessageTemplateAction(
+                        MessageAction(
                             label='新北市',
                             text='新北市'
                         )
@@ -28,20 +28,106 @@ def button():
                     title='縣市選擇',
                     text='請選擇縣市',
                     actions=[
-                        MessageTemplateAction(
+                        MessageAction(
                             label='桃園市',
                             text='桃園市'
                         ),
-                        MessageTemplateAction(
+                        MessageAction(
+                            label='新竹縣',
+                            text='新竹縣'
+                        ),
+                        MessageAction(
                             label='新竹市',
                             text='新竹市'
-                        ),
-                        MessageTemplateAction(
-                            label='苗栗縣',
-                            text='苗栗縣'
                         )
                     ]
-                )
+                ),
+                CarouselColumn(
+                    title='縣市選擇',
+                    text='請選擇縣市',
+                    actions=[
+                        MessageAction(
+                            label='苗栗縣',
+                            text='苗栗縣'
+                        ),
+                        MessageAction(
+                            label='台中市',
+                            text='台中市'
+                        ),
+                        MessageAction(
+                            label='台中市',
+                            text='台中市'
+                        )
+                    ]
+                ),
+                CarouselColumn(
+                    title='縣市選擇',
+                    text='請選擇縣市',
+                    actions=[
+                        MessageAction(
+                            label='彰化縣',
+                            text='彰化縣'
+                        ),
+                        MessageAction(
+                            label='雲林縣',
+                            text='雲林縣'
+                        ),
+                        MessageAction(
+                            label='嘉義縣',
+                            text='嘉義縣'
+                        )
+                    ]
+                ),
+                CarouselColumn(
+                    title='縣市選擇',
+                    text='請選擇縣市',
+                    actions=[
+                        MessageAction(
+                            label='嘉義市',
+                            text='嘉義市'
+                        ),
+                        MessageAction(
+                            label='台南市',
+                            text='台南市'
+                        ),
+                        MessageAction(
+                            label='高雄市',
+                            text='高雄市'
+                        )
+                    ]
+                ),
+                CarouselColumn(
+                    title='縣市選擇',
+                    text='請選擇縣市',
+                    actions=[
+                        MessageAction(
+                            label='屏東縣',
+                            text='屏東縣'
+                        ),
+                        MessageAction(
+                            label='台東縣',
+                            text='台東縣'
+                        ),
+                        MessageAction(
+                            label='花蓮縣',
+                            text='花蓮縣'
+                        )
+                    ]
+                ),
+                CarouselColumn(
+                    title='縣市選擇',
+                    text='請選擇縣市',
+                    actions=[
+                        MessageAction(
+                            label='宜蘭縣',
+                            text='宜蘭縣'
+                        ),
+                        MessageAction(
+                            label='南投縣',
+                            text='南投縣'
+                        ),
+                    ]
+                ),
             ]
         )    
     )

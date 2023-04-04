@@ -93,7 +93,25 @@ class weather(function):
 
         city_web = {"台北市" : "https://weather.com/zh-TW/weather/hourbyhour/l/6b221b26e046a442e03dc46fbe91d5874c6461afde61187dd4126bddeea1e2aa",
                     "基隆市" : "https://weather.com/zh-TW/weather/hourbyhour/l/7a1bd787c9a5bfd8b7290f325ea531127a0447198d4c09689f6cf12f4421a110a042adb62e0ce6b4ee0110784300e689",
-                    "台南市" : "https://weather.com/zh-TW/weather/hourbyhour/l/cb9a4442e9bf7da0ece89bd21a5161210e79cccc0ec2647b3565977e7a278c31"}
+                    "台南市" : "https://weather.com/zh-TW/weather/hourbyhour/l/cb9a4442e9bf7da0ece89bd21a5161210e79cccc0ec2647b3565977e7a278c31",
+                    "新北市" : "",
+                    "台中市" : "https://weather.com/zh-TW/weather/hourbyhour/l/8e095973cc14ab3966eab1a0c6a1b04f5291e61049bff4cb42a510b3881afec9",
+                    "桃園市" : "https://weather.com/zh-TW/weather/hourbyhour/l/efbf308224729b20c95ff9150f731657639bc63cce74c8c098357587b7bbc9c4",
+                    "台南市" : "https://weather.com/zh-TW/weather/hourbyhour/l/cb9a4442e9bf7da0ece89bd21a5161210e79cccc0ec2647b3565977e7a278c31",
+                    "高雄市" : "https://weather.com/zh-TW/weather/hourbyhour/l/48697cc4c9743031df643ebe553fc08fd83bf2e96d7c7f58c0db435d5888131f",
+                    "彰化縣" : "https://weather.com/zh-TW/weather/hourbyhour/l/50f0afa948f93e0309ee2f37a6d34beaf66a79e423e4dec6b9bc063ce8d993c8",
+                    "新竹縣" : "https://weather.com/zh-TW/weather/hourbyhour/l/9d98eb3f97a83330c0599a7548c3c7b47163615858673cfee2406e208ce20604",
+                    "苗栗縣" : "",
+                    "彰化縣" : "",
+                    "南投縣" : "",
+                    "雲林縣" : "",
+                    "嘉義縣" : "",
+                    "屏東縣" : "",
+                    "台東縣" : "",
+                    "新竹市" : "https://weather.com/zh-TW/weather/hourbyhour/l/9d98eb3f97a83330c0599a7548c3c7b47163615858673cfee2406e208ce20604",
+                    "嘉義市" : "",
+                    
+                    }
 
         url = city_web[area]
 
