@@ -26,8 +26,8 @@ class Main:
     func = '0'
 
     def ChooseOpenAI(sentence):
-        if Main.func == '0' and (sentence == 'AI對話'):
-            return openai_module(sentence)
+            ai_reply = openai_module(sentence)
+            return ai_reply
 
     def ChooseFunc(sentence):
         if Main.func == '0' and (sentence in list_function):
@@ -45,10 +45,7 @@ class Main:
             
             elif sentence == 'AI對話':
                 Main.func = '4'
-                before_start_reply = "【AI對話已開啟...】\n \
-                                        點擊左下角，即可開始打字聊天\n \
-                                        如需中斷，請輸入「對話中斷」\n \
-                                        祝您聊天愉快。"
+                before_start_reply = "【AI對話已開啟...】\n\n點擊左下角即可開始打字聊天\n如需中斷請輸入「對話中斷」\n祝您聊天愉快。"
                 return before_start_reply
 
         else:
@@ -81,20 +78,29 @@ class Main:
 
         return False
 
-    def main(sentence):
+    def main(event, sentence):
         if Main.func == '4':
             if sentence == '對話中斷':
                 Main.func = '0'
-                return '4'
+                reply = "【AI對話已關閉...】"
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
             
             else: 
-                return '3'
+                reply = Main.ChooseOpenAI(sentence)
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
 
         elif (Main.func == '0') and (sentence in list_function):
-            return '1'
+            if sentence == "美食推薦" or sentence == "景點推薦" or sentence == "天氣預覽":
+                City_message = Main.ChooseFunc(sentence)
+                line_bot_api.reply_message(event.reply_token, City_message)
+
+            elif sentence == "AI對話":
+                reply = Main.ChooseFunc(sentence)
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
 
         elif (Main.func != '0') and (sentence in list_city):
-            return '2'
+            reply = Main.ChooseArea(sentence)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
 
         else:
             return '0'

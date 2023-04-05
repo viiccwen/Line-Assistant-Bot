@@ -2,7 +2,7 @@ import openai
 
 
 def openai_module(question):
-    openai.api_key = "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"
+    openai.api_key = ""
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=f"\nHuman:{question}\nAI:",

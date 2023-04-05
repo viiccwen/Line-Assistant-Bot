@@ -37,32 +37,7 @@ def callback(request):
         for event in events:
             if isinstance(event, MessageEvent):
                 
-                func = Main.check(event.message.text)
-                
-                if func == '0':
-                    line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage("error"))
-
-                elif func == '1': # 回傳選擇縣市之列表 (json list)
-                    City_message = Main.ChooseFunc(event.message.text)
-                    line_bot_api.reply_message(
-                    event.reply_token, City_message)
-
-                elif func == '2': # 回傳功能對應之結果 (字串)
-                    reply = Main.ChooseArea(event.message.text)
-                    line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(reply))
-
-                elif func == '3': # 回傳openai對話字串
-                    reply = Main.ChooseOpenAI(event.message.text)
-                    line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(reply))
-                
-                elif func == '4': # 回傳openai已結束對話字串
-                    reply = Main.ChooseOpenAI(event.message.text)
-                    line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(reply))
-                    
+                Main.main(event,event.message.text)                    
 
         return HttpResponse()
     else:
