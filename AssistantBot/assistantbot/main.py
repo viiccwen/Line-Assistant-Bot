@@ -20,52 +20,54 @@ list_city = ["台北市", "基隆市", "新北市",
              "雲林縣", "嘉義縣", "屏東縣",
              "台東縣", "花蓮縣", "新竹市","嘉義市"]
 
+list_user_id = []
 
 class Main:
-    func = '0'
-    AI_conversation = '0'
+    def __init__(self):
+        self.func = '0'
+        self.AI_conversation = '0'        
 
-    def ChooseOpenAI(sentence):
+    def ChooseOpenAI(self, sentence):
         ai_reply = openai_module(sentence)
         return ai_reply
 
-    def ChooseFunc(sentence):
+    def ChooseFunc(self, sentence):
         if sentence == '美食推薦':
-            Main.func = '1'
+            self.func = '1'
             return button('美食推薦選單')
 
         elif sentence == '景點推薦':
-            Main.func = '2'
+            self.func = '2'
             return button('景點推薦選單')
 
         elif sentence == '天氣預覽':
-            Main.func = '3'
+            self.func = '3'
             return button('天氣預覽選單')
         
         elif sentence == 'AI對話':
-            Main.func = '4'
-            Main.AI_conversation = '1'
+            self.func = '4'
+            self.AI_conversation = '1'
             before_start_reply = "【AI對話已開啟...】\n\n點擊左下角即可開始打字聊天\n如需中斷請輸入「中斷對話」\n祝您聊天愉快。"
             return before_start_reply
 
         
-    def ChooseArea(sentence):
-        if Main.func == '1':
-            Main.func = '0'
+    def ChooseArea(self, sentence):
+        if self.func == '1':
+            self.func = '0'
             return IFoodie().crawler(sentence)
 
-        elif Main.func == '2':
-            Main.func = '0'
+        elif self.func == '2':
+            self.func = '0'
             return okgo().crawler(sentence)
 
-        elif Main.func == '3':
-            Main.func = '0'
+        elif self.func == '3':
+            self.func = '0'
             return weather().crawler(sentence)
 
         else:
             return "無法辨識您的問題，請確認是否正常操作。"
 
-    def SendMessage(event, message):
+    def SendMessage(self, event, message):
         if isinstance(event, MessageEvent):
             message_type = type(message)
 
@@ -76,30 +78,31 @@ class Main:
                 line_bot_api.reply_message(event.reply_token, message)
 
 
-    def main(event, sentence):
-        if Main.func == '4':
+    def main(self, event, sentence):
+        print(self.func)
+        if self.func == '4':
             if sentence == '中斷對話':
                 reply = "【AI對話已關閉...】"
-                Main.SendMessage(event, reply)
+                self.SendMessage(event, reply)
             
             else: 
-                reply = Main.ChooseOpenAI(sentence)
-                Main.SendMessage(event, reply)
+                reply = self.ChooseOpenAI(sentence)
+                self.SendMessage(event, reply)
 
-        elif Main.func == '0' and sentence in list_function:
+        elif self.func == '0' and sentence in list_function:
             if sentence == "美食推薦" or sentence == "景點推薦" or sentence == "天氣預覽":
-                City_message = Main.ChooseFunc(sentence)
-                Main.SendMessage(event, City_message) 
+                City_message = self.ChooseFunc(sentence)
+                self.SendMessage(event, City_message) 
 
             elif sentence == "AI對話":
-                reply = Main.ChooseFunc(sentence)
-                Main.SendMessage(event, reply)
+                reply = self.ChooseFunc(sentence)
+                self.SendMessage(event, reply)
 
-        elif Main.func != '0' and sentence in list_city:
-            reply = Main.ChooseArea(sentence)
-            Main.SendMessage(event, reply)
+        elif self.func != '0' and sentence in list_city:
+            reply = self.ChooseArea(sentence)
+            self.SendMessage(event, reply)
 
         else:
             reply = "無法辨識您的問題，請確認是否正常操作。"
-            Main.func = '0'
-            Main.SendMessage(event, reply)
+            self.func = '0'
+            self.SendMessage(event, reply)

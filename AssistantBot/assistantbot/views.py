@@ -11,16 +11,18 @@ from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage
 from linebot.models import *
  
-from .main import Main
+from .main import *
 
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
  
- 
+dic_UserName = {}
+i = 0
+
 @csrf_exempt
 def callback(request):
- 
+    
     if request.method == 'POST':
         signature = request.META['HTTP_X_LINE_SIGNATURE']
         body = request.body.decode('utf-8')
@@ -33,11 +35,17 @@ def callback(request):
             return HttpResponseForbidden()
         except LineBotApiError:
             return HttpResponseBadRequest()
- 
+
         for event in events:
             if isinstance(event, MessageEvent):
-                
-                Main.main(event,event.message.text)                    
+                UserId = event.source.user_id
+                if UserId not in dic_UserName:
+                    NewUser = Main()
+                    dic_UserName[UserId] = NewUser
+                    dic_UserName[UserId].main(event,event.message.text) 
+
+                else:
+                    dic_UserName[UserId].main(event,event.message.text) 
 
         return HttpResponse()
     else:
