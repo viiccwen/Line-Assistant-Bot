@@ -52,6 +52,16 @@ def callback(request):
                     reply = Main.ChooseArea(event.message.text)
                     line_bot_api.reply_message(
                     event.reply_token, TextSendMessage(reply))
+
+                elif func == '3': # 回傳openai對話字串
+                    reply = Main.ChooseOpenAI(event.message.text)
+                    line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(reply))
+                
+                elif func == '4': # 回傳openai已結束對話字串
+                    reply = Main.ChooseOpenAI(event.message.text)
+                    line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(reply))
                     
 
         return HttpResponse()

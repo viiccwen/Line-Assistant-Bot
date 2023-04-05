@@ -1,7 +1,18 @@
+from linebot import LineBotApi, WebhookParser
+from linebot.exceptions import InvalidSignatureError, LineBotApiError
+from linebot.models import MessageEvent, TextSendMessage
+from linebot.models import *
+
+from django.conf import settings
+
 from .crawler import function, IFoodie, okgo, weather
 from .button_mes import button
+from .openai_mes import openai_module
 
-list_function = ["美食推薦", "景點推薦", "天氣預覽"]
+line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
+parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
+
+list_function = ["美食推薦", "景點推薦", "天氣預覽", "AI對話"]
 
 list_city = ["台北市", "基隆市", "新北市", 
              "台中市", "桃園市", "台南市",
@@ -14,19 +25,31 @@ list_city = ["台北市", "基隆市", "新北市",
 class Main:
     func = '0'
 
+    def ChooseOpenAI(sentence):
+        if Main.func == '0' and (sentence == 'AI對話'):
+            return openai_module(sentence)
+
     def ChooseFunc(sentence):
         if Main.func == '0' and (sentence in list_function):
             if sentence == '美食推薦':
                 Main.func = '1'
-                return button()
+                return button('美食推薦選單')
 
             elif sentence == '景點推薦':
                 Main.func = '2'
-                return button()
+                return button('景點推薦選單')
 
             elif sentence == '天氣預覽':
                 Main.func = '3'
-                return button()
+                return button('天氣預覽選單')
+            
+            elif sentence == 'AI對話':
+                Main.func = '4'
+                before_start_reply = "【AI對話已開啟...】\n \
+                                        點擊左下角，即可開始打字聊天\n \
+                                        如需中斷，請輸入「對話中斷」\n \
+                                        祝您聊天愉快。"
+                return before_start_reply
 
         else:
             return []
@@ -54,9 +77,20 @@ class Main:
             Main.func = '0'
             return 'error'
 
-    def check(sentence):
+    def checkAI():
 
-        if (Main.func == '0') and (sentence in list_function):
+        return False
+
+    def main(sentence):
+        if Main.func == '4':
+            if sentence == '對話中斷':
+                Main.func = '0'
+                return '4'
+            
+            else: 
+                return '3'
+
+        elif (Main.func == '0') and (sentence in list_function):
             return '1'
 
         elif (Main.func != '0') and (sentence in list_city):

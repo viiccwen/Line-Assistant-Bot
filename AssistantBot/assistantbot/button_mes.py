@@ -2,7 +2,7 @@ from linebot.models import *
 
 message = []
 
-def button():
+def button(sentence):
     global message
     if message == []:
         message = TemplateSendMessage(
@@ -10,7 +10,7 @@ def button():
             template = CarouselTemplate(
                 columns = [
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
@@ -28,7 +28,7 @@ def button():
                         ]
                     ),
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
@@ -46,7 +46,7 @@ def button():
                         ]
                     ),
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
@@ -64,7 +64,7 @@ def button():
                         ]
                     ),
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
@@ -82,7 +82,7 @@ def button():
                         ]
                     ),
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
@@ -100,7 +100,7 @@ def button():
                         ]
                     ),
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
@@ -118,7 +118,7 @@ def button():
                         ]
                     ),
                     CarouselColumn(
-                        title='縣市選擇',
+                        title=sentence,
                         text='請選擇縣市',
                         actions=[
                             MessageAction(
