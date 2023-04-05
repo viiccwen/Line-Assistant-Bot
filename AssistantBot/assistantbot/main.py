@@ -1,7 +1,7 @@
 from .crawler import function, IFoodie, okgo, weather
 from .button_mes import button
 
-list_function = ["餐廳美食", "旅遊景點", "天氣預覽"]
+list_function = ["美食推薦", "景點推薦", "天氣預覽"]
 
 list_city = ["台北市", "基隆市", "新北市", 
              "台中市", "桃園市", "台南市",
@@ -16,11 +16,11 @@ class Main:
 
     def ChooseFunc(sentence):
         if Main.func == '0' and (sentence in list_function):
-            if sentence == '餐廳美食':
+            if sentence == '美食推薦':
                 Main.func = '1'
                 return button()
 
-            elif sentence == '旅遊景點':
+            elif sentence == '景點推薦':
                 Main.func = '2'
                 return button()
 
