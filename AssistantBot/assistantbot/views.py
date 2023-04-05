@@ -16,9 +16,6 @@ from .main import *
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
- 
-dic_UserName = {}
-i = 0
 
 @csrf_exempt
 def callback(request):
@@ -38,15 +35,20 @@ def callback(request):
 
         for event in events:
             if isinstance(event, MessageEvent):
-                UserId = event.source.user_id
-                if UserId not in dic_UserName:
+                LineUserId = event.source.user_id
+                LineUserName = line_bot_api.get_profile(LineUserId)
+                if LineUserId not in UserName:
+                    print(f"New User Name: {LineUserName.display_name}")
+                    print(f"New User UID: {LineUserId}")
+                    print(event.message.text)
                     NewUser = Main()
-                    dic_UserName[UserId] = NewUser
-                    dic_UserName[UserId].main(event,event.message.text) 
-
-                else:
-                    dic_UserName[UserId].main(event,event.message.text) 
-
+                    UserName[LineUserId] = NewUser
+                
+                print(f"User Name: {LineUserName.display_name}")
+                print(f"User UID: {LineUserId}")
+                print(event.message.text)
+                UserName[LineUserId].main(event,event.message.text) 
+                    
         return HttpResponse()
     else:
         return HttpResponseBadRequest()

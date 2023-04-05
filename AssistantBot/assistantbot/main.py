@@ -20,16 +20,29 @@ list_city = ["台北市", "基隆市", "新北市",
              "雲林縣", "嘉義縣", "屏東縣",
              "台東縣", "花蓮縣", "新竹市","嘉義市"]
 
-list_user_id = []
+UserName = {}
 
 class Main:
     def __init__(self):
         self.func = '0'
         self.AI_conversation = '0'        
 
+
+    def SendMessage(self, event, message):
+        if isinstance(event, MessageEvent):
+            message_type = type(message)
+
+            if message_type == type('str'):
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+            
+            elif message_type == type(TemplateSendMessage()): # json list
+                line_bot_api.reply_message(event.reply_token, message)
+
+
     def ChooseOpenAI(self, sentence):
         ai_reply = openai_module(sentence)
         return ai_reply
+
 
     def ChooseFunc(self, sentence):
         if sentence == '美食推薦':
@@ -67,21 +80,11 @@ class Main:
         else:
             return "無法辨識您的問題，請確認是否正常操作。"
 
-    def SendMessage(self, event, message):
-        if isinstance(event, MessageEvent):
-            message_type = type(message)
-
-            if message_type == type('str'):
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
-            
-            elif message_type == type(TemplateSendMessage()): # json list
-                line_bot_api.reply_message(event.reply_token, message)
-
 
     def main(self, event, sentence):
-        print(self.func)
         if self.func == '4':
             if sentence == '中斷對話':
+                self.func = '0'
                 reply = "【AI對話已關閉...】"
                 self.SendMessage(event, reply)
             
