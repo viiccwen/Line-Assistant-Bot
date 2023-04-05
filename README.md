@@ -7,8 +7,7 @@
 
 ## Instruction - 成果
 
-## Platform & Else - 平台和雜項
-
+![on HackMD](https://hackmd.io/sKBqjGFvRa65vC0f3hwopQ)
 
 ## Update Log 更新日誌
 
