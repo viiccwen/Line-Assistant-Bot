@@ -1,11 +1,10 @@
 from linebot import LineBotApi, WebhookParser
-from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage
 from linebot.models import *
 
 from django.conf import settings
 
-from .crawler import function, IFoodie, okgo, weather
+from .crawler import IFoodie, okgo, weather
 from .button_mes import button
 from .openai_mes import openai_module
 
@@ -24,83 +23,83 @@ list_city = ["台北市", "基隆市", "新北市",
 
 class Main:
     func = '0'
+    AI_conversation = '0'
 
     def ChooseOpenAI(sentence):
-            ai_reply = openai_module(sentence)
-            return ai_reply
+        ai_reply = openai_module(sentence)
+        return ai_reply
 
     def ChooseFunc(sentence):
-        if Main.func == '0' and (sentence in list_function):
-            if sentence == '美食推薦':
-                Main.func = '1'
-                return button('美食推薦選單')
+        if sentence == '美食推薦':
+            Main.func = '1'
+            return button('美食推薦選單')
 
-            elif sentence == '景點推薦':
-                Main.func = '2'
-                return button('景點推薦選單')
+        elif sentence == '景點推薦':
+            Main.func = '2'
+            return button('景點推薦選單')
 
-            elif sentence == '天氣預覽':
-                Main.func = '3'
-                return button('天氣預覽選單')
-            
-            elif sentence == 'AI對話':
-                Main.func = '4'
-                before_start_reply = "【AI對話已開啟...】\n\n點擊左下角即可開始打字聊天\n如需中斷請輸入「對話中斷」\n祝您聊天愉快。"
-                return before_start_reply
+        elif sentence == '天氣預覽':
+            Main.func = '3'
+            return button('天氣預覽選單')
+        
+        elif sentence == 'AI對話':
+            Main.func = '4'
+            Main.AI_conversation = '1'
+            before_start_reply = "【AI對話已開啟...】\n\n點擊左下角即可開始打字聊天\n如需中斷請輸入「中斷對話」\n祝您聊天愉快。"
+            return before_start_reply
 
-        else:
-            return []
         
     def ChooseArea(sentence):
-        if (Main.func != '0') and (sentence in list_city):
-            
-            if Main.func == '1':
-                Main.func = '0'
-                return IFoodie().crawler(sentence)
-
-            elif Main.func == '2':
-                Main.func = '0'
-                return okgo().crawler(sentence)
-
-            elif Main.func == '3':
-                Main.func = '0'
-                return weather().crawler(sentence)
-
-            else:
-                Main.func = '0'
-                return 'error'
-        
-        else:
+        if Main.func == '1':
             Main.func = '0'
-            return 'error'
+            return IFoodie().crawler(sentence)
 
-    def checkAI():
+        elif Main.func == '2':
+            Main.func = '0'
+            return okgo().crawler(sentence)
 
-        return False
+        elif Main.func == '3':
+            Main.func = '0'
+            return weather().crawler(sentence)
+
+        else:
+            return "無法辨識您的問題，請確認是否正常操作。"
+
+    def SendMessage(event, message):
+        if isinstance(event, MessageEvent):
+            message_type = type(message)
+
+            if message_type == type('str'):
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+            
+            elif message_type == type(TemplateSendMessage()): # json list
+                line_bot_api.reply_message(event.reply_token, message)
+
 
     def main(event, sentence):
         if Main.func == '4':
-            if sentence == '對話中斷':
-                Main.func = '0'
+            if sentence == '中斷對話':
                 reply = "【AI對話已關閉...】"
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
+                Main.SendMessage(event, reply)
             
             else: 
                 reply = Main.ChooseOpenAI(sentence)
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
+                Main.SendMessage(event, reply)
 
-        elif (Main.func == '0') and (sentence in list_function):
+        elif Main.func == '0' and sentence in list_function:
             if sentence == "美食推薦" or sentence == "景點推薦" or sentence == "天氣預覽":
                 City_message = Main.ChooseFunc(sentence)
-                line_bot_api.reply_message(event.reply_token, City_message)
+                Main.SendMessage(event, City_message) 
 
             elif sentence == "AI對話":
                 reply = Main.ChooseFunc(sentence)
-                line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
+                Main.SendMessage(event, reply)
 
-        elif (Main.func != '0') and (sentence in list_city):
+        elif Main.func != '0' and sentence in list_city:
             reply = Main.ChooseArea(sentence)
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(reply))
+            Main.SendMessage(event, reply)
 
         else:
-            return '0'
+            reply = "無法辨識您的問題，請確認是否正常操作。"
+            Main.func = '0'
+            Main.SendMessage(event, reply)
